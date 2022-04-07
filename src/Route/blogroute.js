@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const blogdetails = require('../Model/blog')
 const bcrypt = require('bcrypt')
-const registerVal = require('../validation')
-const loginVal =require('../validation')
+const {registerVal, loginVal} = require('../validation')
+
 const jwt = require('jsonwebtoken')
 
 router.post('/register', async (req, res) => {
@@ -36,7 +36,7 @@ router.post('/login', async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message)
 
     //emaiil
-    let blog = await blogdetails.findOne({email: req.body.email})
+    const blog = await blogdetails.findOne({email: req.body.email})
     if(!blog) return res.status(400).send("email not found");
 
     //password
@@ -50,7 +50,7 @@ router.post('/login', async (req, res) => {
 
 })
 
-//create
+// create
 // router.post('/create', async (req, res) => {
 //        try{
 //            const user = new blogdetails(req.body);

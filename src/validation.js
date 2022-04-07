@@ -32,5 +32,5 @@ const loginVal = data => {
     };
 
 
-module.exports =  registerVal;
-module.exports = loginVal;
+module.exports.registerVal =  registerVal;
+module.exports.loginVal = loginVal;
