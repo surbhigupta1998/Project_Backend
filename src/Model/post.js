@@ -7,25 +7,14 @@ const PostSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    desc: {
-      type: String,
-      required: true,
-    },
-    photo: {
-      type: String,
-      required: false,
-    },
-    username: {
-      type: String,
-      required: true,
-    },
-    categories: {
-      type: Array,
-      required: false,
-    },
+   text:{
+    type: String,
+    required: true,
+    unique: true,
+   }
   },
   
 );
 //collection
-const postdetails = new mongoose.model("postDetail", PostSchema)
-module.exports = postdetails;
+const Postdetails = new mongoose.model("postDetail", PostSchema)
+module.exports = Postdetails;
