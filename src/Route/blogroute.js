@@ -36,17 +36,19 @@ router.post('/login', async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message)
 
     //emaiil
-    const blog = await blogdetails.findOne({email: req.body.email})
-    if(!blog) return res.status(400).send("email not found");
+    const users = await blogdetails.findOne({email: req.body.email})
+    if(!users) return res.status(400).send("email not found");
 
     //password
 
-    const password = await bcrypt.compare(req.body.password, blog.password)
+    const password = await bcrypt.compare(req.body.password, users.password)
     if(!password) return res.status(400).send("invalid password!!");
 
     // token
-    const token = jwt.sign({_id: blog._id.toString() }, "private_token")
-    res.header('auth-token',token).send(token);
+    const token = jwt.sign({_id: users._id.toString() }, "private_token")
+    res.header('auth-token',token).send({ users:users, token:token});
+    console.log(users
+    
 
 })
 
