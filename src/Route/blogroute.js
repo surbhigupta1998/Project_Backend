@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
     // token
     const token = jwt.sign({_id: users._id.toString() }, "private_token")
     res.header('auth-token',token).send({ users:users, token:token});
-    console.log(users
+    console.log(users)
     
 
 })

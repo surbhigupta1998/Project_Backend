@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema(
@@ -13,9 +14,13 @@ const PostSchema = new mongoose.Schema(
    status:{
     type: String,
     required: true,
+   },
+   visibility:{
+    type:String,
+    default:false
    }
 
-  },
+  }
   
 );
 //collection

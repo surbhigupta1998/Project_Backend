@@ -58,4 +58,24 @@ routerPost.get("/", async (req, res) => {
   }
 });
 
+// routerPost.get("/view/:_id", async (req, res) => {
+//   try {
+//     const userid = req.params._id
+//     const user = await Postdetails.findById(userid);
+//     res.send(user)
+//   } catch (e) {
+//     res.status(400).send(e);
+//   }
+// })
+//Put
+routerPost.put('/editall/:id', async (req,res) =>{
+  try{
+      
+      console.log(req.body)
+      const editpost = await Postdetails.findByIdAndUpdate({_id:req.params._id},{$set:{title:req.body.title}})
+  res.send(editpost)
+  }catch(e){
+      res.status(400).send(e);
+  }
+})
 module.exports = routerPost;
