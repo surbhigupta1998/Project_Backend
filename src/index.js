@@ -1,21 +1,17 @@
 const express = require('express');
-const index = express();
+const app = express();
 const port = 7000;
 require('./Database/connection')
-const router = require('./Route/blogroute')
-const routerPost = require('../src/Route/post')
-const  cors = require ('cors');
+const cors = require ('cors');
 
+app.use(express.json())
+app.use(cors())
 
-
-index.use(express.json())  
-index.use(express.urlencoded({ extended: true }));
-index.use(cors())
 //routes middleware
-index.use('/blog', router);
-index.use('/posts',routerPost)
+app.use('/blog', require('./Route/auth'));
+app.use('/posts',require('./Route/post'))
 
 
-index.listen(port, function(){
+app.listen(port, function(){
     console.log(`Port : ${port}`);
 })

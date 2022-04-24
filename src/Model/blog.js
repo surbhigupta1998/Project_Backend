@@ -1,23 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const blogSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required : true,
-        trim : true,
+const BlogSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    email:{
-        type: String,
-        required : true,
-        trim : true,
-    },
-    password:{
-        type: String,
-        required : true,
-        trim : true,
-    },
-});
+   text:{
+    type: String,
+    required: true,
+   },
+   email:{
+    type: String
+   },
+   visibility:{
+    type:Boolean,
+    default:false
+   }
 
-//collection 
-const blogdetails = new mongoose.model("blogDetail", blogSchema)
+  }
+  
+);
+//collection
+const blogdetails = new mongoose.model("blogs", BlogSchema)
 module.exports = blogdetails;
