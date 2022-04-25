@@ -1,17 +1,14 @@
 const express = require('express');
-const app = express();
-const port = 7000;
-require('./Database/connection')
 const cors = require ('cors');
+const app = express();
+require('./Database/connection');
+const port = 7000;
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 
 //routes middleware
 app.use('/blog', require('./Route/auth'));
 app.use('/posts',require('./Route/post'))
 
-
-app.listen(port, function(){
-    console.log(`Port : ${port}`);
-})
+app.listen(port, () => console.log(`Server started at port ${port}`))

@@ -1,11 +1,15 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const { body, validationResult } = require('express-validator')
 const userdetails = require('../Model/user')
 const bcrypt = require('bcrypt')
 
 const jwt = require('jsonwebtoken')
 
-router.post('/register', async (req, res) => {
+router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('name', 'Name must be 6 characters long').isLength({ min: 6 })], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+        return res.status(400).send({ msg: errors.array() })
+
     const { name, password, email } = req.body;
     try {
         if (!name)
@@ -38,7 +42,11 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.post('/login', async (req, res) => {
+router.post('/login',[body('email', 'Enter a valid email').isEmail()], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+        return res.status(400).json({ msg: errors.array() })
+    
     const { email, password } = req.body
     try {
         if (!email)
