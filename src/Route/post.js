@@ -11,12 +11,12 @@ routerPost.post("/create", async (req, res) => {
       return res.status(400).send({ msg: "Unauthorized access" })
     
     const decoded = jwt.verify(authtoken, "surbhigupta@gmail.com");
-    const banda = await userdetails.findOne({ email: decoded.email })
+    const userExist = await userdetails.findOne({ email: decoded.email })
    
-    if (!banda)
+    if (!userExist)
       return res.status(400).send({ msg: "Invalid Credentials" })
 
-    const user = new Blogdetails({ title, text, visibility, email: banda.email });
+    const user = new Blogdetails({ title, text, visibility, email: user.email });
     const insert = await user.save();
     return res.status(201).send(insert);
   } catch (error) {
@@ -43,12 +43,12 @@ routerPost.post("/draft", async (req, res) => {
     return res.status(400).send({ msg: "Login First to see posts" })
 
   const decoded = jwt.verify(authtoken, "surbhigupta@gmail.com");
-  const banda = await userdetails.findOne({ email: decoded.email })
-  if (!banda)
+  const user = await userdetails.findOne({ email: decoded.email })
+  if (!user)
     return res.status(400).send({ msg: "Invalid Credentials" })
   
   try {
-    const posts = await Blogdetails.find({ email: banda.email })
+    const posts = await Blogdetails.find({ email: user.email })
     return res.status(200).json(posts);
   } catch (err) {
     return res.status(500).json(err);
@@ -60,22 +60,23 @@ routerPost.post("/draft", async (req, res) => {
 routerPost.delete('/delete/:id', async (req, res) => {
   try {
     const userlist = await Blogdetails.findByIdAndDelete(req.params.id)
-    res.status(201).send({ message: "deleted!!" });
+    console.log(userlist)
+    return res.status(204).send({ message: "deleted!!" });
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
 })
 
 
 //Put
-routerPost.put('/editall/:id', async (req, res) => {
+routerPost.put('/update', async (req, res) => {
   try {
-
-    console.log(req.body)
-    const editpost = await Blogdetails.findByIdAndUpdate({ _id: req.params._id }, { $set: { title: req.body.title } })
-    res.send(editpost)
+    const {id,title,text} = req.body
+    const editpost = await Blogdetails.findByIdAndUpdate({ _id: id }, { $set: { title: title, text:text } })
+    if(editpost)
+      return res.status(204).send({msg:"Resource updated successfully"})
   } catch (e) {
-    res.status(400).send(e);
+    return res.status(400).send(e);
   }
 })
 
