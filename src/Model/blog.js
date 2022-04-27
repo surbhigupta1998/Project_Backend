@@ -16,8 +16,17 @@ const BlogSchema = new mongoose.Schema(
    visibility:{
     type:Boolean,
     default:false
+   },
+   likes:{
+     type:Number,
+     default:0,
+     min:0
+   },
+   dislikes:{
+     type:Number,
+     default:0,
+     min:0
    }
-
   }
   
 );

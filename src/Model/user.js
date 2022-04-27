@@ -16,6 +16,12 @@ const userSchema = new mongoose.Schema({
         required : true,
         trim : true,
     },
+    postsLiked:{
+        type:[String]
+    },
+    postsDisliked:{
+        type:[String]
+    }
 });
 
 //collection 
