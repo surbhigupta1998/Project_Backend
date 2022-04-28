@@ -26,9 +26,11 @@ const BlogSchema = new mongoose.Schema(
      type:Number,
      default:0,
      min:0
+   },
+   comments:{
+     type:{type:String}
    }
   }
-  
 );
 //collection
 const blogdetails = new mongoose.model("blogs", BlogSchema)

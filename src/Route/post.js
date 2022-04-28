@@ -36,7 +36,7 @@ routerPost.post("/", async (req, res) => {
     const user = await userdetails.findOne({ email: decoded.email })
     if (!user)
       return res.status(400).send({ msg: "Invalid Credentials" })
-    console.log(user);
+
     const posts = await Blogdetails.find({})
     return res.status(200).json({ posts, postsLiked: user.postsLiked, postsDisliked: user.postsDisliked });
   } catch (err) {
@@ -58,7 +58,7 @@ routerPost.post("/draft", async (req, res) => {
 
   try {
     const posts = await Blogdetails.find({ email: user.email })
-    return res.status(200).json(posts);
+    return res.status(200).json({ posts });
   } catch (err) {
     return res.status(500).json(err);
   }
@@ -98,17 +98,17 @@ routerPost.put('/like', async (req, res) => {
     const user = await userdetails.findOne({ email: decoded.email })
     if (!user)
       return res.status(400).send({ msg: "Invalid Credentials" })
-    const blog = await Blogdetails.findOne({_id:id})
-    if(user.postsLiked.includes(id)){
-      await Blogdetails.updateOne({_id:id},{$set:{likes:blog.likes-1}})
-      await userdetails.updateOne({email:decoded.email},{ $pull: { postsLiked: id } })
+    const blog = await Blogdetails.findOne({ _id: id })
+    if (user.postsLiked.includes(id)) {
+      await Blogdetails.updateOne({ _id: id }, { $set: { likes: blog.likes - 1 } })
+      await userdetails.updateOne({ email: decoded.email }, { $pull: { postsLiked: id } })
       return res.status(204).send()
-    }else{
-      await Blogdetails.updateOne({_id:id},{$set:{likes:blog.likes+1}})
-      await userdetails.updateOne({email:decoded.email},{ $push: { postsLiked: id } })
-      if(user.postsDisliked.includes(id)){
-        await Blogdetails.updateOne({_id:id},{$set:{dislikes:blog.dislikes-1}})
-        await userdetails.updateOne({email:decoded.email},{ $pull: { postsDisliked: id } })
+    } else {
+      await Blogdetails.updateOne({ _id: id }, { $set: { likes: blog.likes + 1 } })
+      await userdetails.updateOne({ email: decoded.email }, { $push: { postsLiked: id } })
+      if (user.postsDisliked.includes(id)) {
+        await Blogdetails.updateOne({ _id: id }, { $set: { dislikes: blog.dislikes - 1 } })
+        await userdetails.updateOne({ email: decoded.email }, { $pull: { postsDisliked: id } })
       }
       return res.status(204).send()
     }
@@ -127,20 +127,39 @@ routerPost.put('/dislike', async (req, res) => {
     const user = await userdetails.findOne({ email: decoded.email })
     if (!user)
       return res.status(400).send({ msg: "Invalid Credentials" })
-    const blog = await Blogdetails.findOne({_id:id})
-    if(user.postsDisliked.includes(id)){
-      await Blogdetails.updateOne({_id:id},{$set:{dislikes:blog.dislikes-1}})
-      await userdetails.updateOne({email:decoded.email},{ $pull: { postsDisliked: id } })
+    const blog = await Blogdetails.findOne({ _id: id })
+    if (user.postsDisliked.includes(id)) {
+      await Blogdetails.updateOne({ _id: id }, { $set: { dislikes: blog.dislikes - 1 } })
+      await userdetails.updateOne({ email: decoded.email }, { $pull: { postsDisliked: id } })
       return res.status(204).send()
-    }else{
-      await Blogdetails.updateOne({_id:id},{$set:{dislikes:blog.dislikes+1}})
-      await userdetails.updateOne({email:decoded.email},{ $push: { postsDisliked: id } })
-      if(user.postsLiked.includes(id)){
-        await Blogdetails.updateOne({_id:id},{$set:{likes:blog.likes-1}})
-        await userdetails.updateOne({email:decoded.email},{ $pull: { postsLiked: id } })
+    } else {
+      await Blogdetails.updateOne({ _id: id }, { $set: { dislikes: blog.dislikes + 1 } })
+      await userdetails.updateOne({ email: decoded.email }, { $push: { postsDisliked: id } })
+      if (user.postsLiked.includes(id)) {
+        await Blogdetails.updateOne({ _id: id }, { $set: { likes: blog.likes - 1 } })
+        await userdetails.updateOne({ email: decoded.email }, { $pull: { postsLiked: id } })
       }
       return res.status(204).send()
     }
+  } catch (error) {
+    return res.status(400).send(error)
+  }
+})
+
+routerPost.post("/addComment", async (req, res) => {
+  try {
+    const { id, authtoken, comment } = req.body
+    if (!authtoken)
+      return res.status(400).send({ msg: "Login First to see posts" })
+  
+    const decoded = jwt.verify(authtoken, "surbhigupta@gmail.com");
+    const user = await userdetails.findOne({ email: decoded.email })
+    if (!user)
+      return res.status(400).send({ msg: "Invalid Credentials" })
+    console.log(id, comment)
+    const data = await Blogdetails.findByIdAndUpdate({ _id: id }, { $addToSet: { comments: { "username": user.name, "comment": comment } } })
+    console.log(data)
+    return res.status(200).send()  
   } catch (error) {
     return res.status(400).send(error)
   }
