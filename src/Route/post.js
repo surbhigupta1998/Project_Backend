@@ -68,7 +68,7 @@ routerPost.post("/draft", async (req, res) => {
 //DELETE
 routerPost.delete('/delete/:id', async (req, res) => {
   try {
-    const userlist = await Blogdetails.findByIdAndDelete(req.params.id)
+    await Blogdetails.findByIdAndDelete(req.params.id)
     return res.status(204).send({ message: "deleted!!" });
   } catch (e) {
     return res.status(400).send(e);
@@ -156,10 +156,9 @@ routerPost.post("/addComment", async (req, res) => {
     const user = await userdetails.findOne({ email: decoded.email })
     if (!user)
       return res.status(400).send({ msg: "Invalid Credentials" })
-    console.log(id, comment)
-    const data = await Blogdetails.findByIdAndUpdate({ _id: id }, { $addToSet: { comments: { "username": user.name, "comment": comment } } })
-    console.log(data)
-    return res.status(200).send()  
+
+    await Blogdetails.updateOne({ _id: id }, { $push: { comments: { "username": user.name, "comment": comment,"date":new Date().toDateString() } } })
+    return res.status(200).send()
   } catch (error) {
     return res.status(400).send(error)
   }

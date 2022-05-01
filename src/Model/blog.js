@@ -28,7 +28,7 @@ const BlogSchema = new mongoose.Schema(
      min:0
    },
    comments:{
-     type:{type:String}
+     type:[{username:String,comment:String,"date":String}]
    }
   }
 );
