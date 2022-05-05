@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 //CREATE POST
 routerPost.post("/create", async (req, res) => {
   try {
-    const { authtoken, title, text, visibility } = req.body
+    const { authtoken, title, text, visibility, category } = req.body
     if (!authtoken)
       return res.status(400).send({ msg: "Unauthorized access" })
 
@@ -16,8 +16,8 @@ routerPost.post("/create", async (req, res) => {
     if (!userExist)
       return res.status(400).send({ msg: "Invalid Credentials" })
 
-    const user = new Blogdetails({ title, text, visibility, email: userExist.email });
-    const insert = await user.save();
+    const blog = new Blogdetails({ title, text, visibility, email: userExist.email, category });
+    const insert = await blog.save();
     return res.status(201).send(insert);
   } catch (error) {
     return res.status(400).send(error);
@@ -25,10 +25,11 @@ routerPost.post("/create", async (req, res) => {
 });
 
 
-//GET - Public Post
-routerPost.post("/", async (req, res) => {
+//POST - Public Post
+routerPost.post('/:category', async(req,res)=>{
   try {
     const { authtoken } = req.body;
+    const category = req.params.category
     if (!authtoken)
       return res.status(400).send({ msg: "Login First to see posts" })
 
@@ -37,12 +38,18 @@ routerPost.post("/", async (req, res) => {
     if (!user)
       return res.status(400).send({ msg: "Invalid Credentials" })
 
-    const posts = await Blogdetails.find({})
+    let posts;
+  
+    if(category!=='All')
+      posts = await Blogdetails.find({category:category})
+    else
+      posts = await Blogdetails.find({})
     return res.status(200).json({ posts, postsLiked: user.postsLiked, postsDisliked: user.postsDisliked });
   } catch (err) {
     return res.status(500).json(err);
   }
-});
+})
+
 
 // POST - Private Post
 routerPost.post("/draft", async (req, res) => {
@@ -63,7 +70,6 @@ routerPost.post("/draft", async (req, res) => {
     return res.status(500).json(err);
   }
 });
-
 
 //DELETE
 routerPost.delete('/delete/:id', async (req, res) => {

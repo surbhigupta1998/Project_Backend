@@ -29,6 +29,10 @@ const BlogSchema = new mongoose.Schema(
    },
    comments:{
      type:[{username:String,comment:String,"date":String}]
+   },
+   category:{
+     type:String,
+     required:true
    }
   }
 );
