@@ -26,7 +26,7 @@ routerPost.post("/create", async (req, res) => {
 
 
 //POST - Public Post
-routerPost.post('/:category', async(req,res)=>{
+routerPost.post('/filter/:category', async(req,res)=>{
   try {
     const { authtoken } = req.body;
     const category = req.params.category
