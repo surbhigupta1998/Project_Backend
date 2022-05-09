@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
-mongoose.connect("mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false",{
+const dotenv = require("dotenv");
+dotenv.config();
+
+const url = process.env.MONGO_DB_ATLAS_CONNECTION;
+mongoose.connect(url,{
     useNewUrlParser:true,   
+    // useUnfieldTopology : true,
 }).then(()=> {
     console.log("Connection is sucessfully ");
 }).catch((e)=>{

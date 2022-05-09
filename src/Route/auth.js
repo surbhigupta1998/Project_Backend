@@ -35,7 +35,7 @@ router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('
         })
 
         await user.save();
-        const token = jwt.sign({ email: email, password: password }, "surbhigupta@gmail.com")
+        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_TOKEN)
         return res.status(200).send({ authtoken: token });
     } catch (e) {
         return res.status(400).send(e)
@@ -65,7 +65,7 @@ router.post('/login',[body('email', 'Enter a valid email').isEmail()], async (re
             return res.status(400).send({ msg: "Invalid Credentials" });
 
         // token
-        const token = jwt.sign({ email: email, password: password }, "surbhigupta@gmail.com")
+        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_TOKEN)
         return res.status(200).send({ authtoken: token });
     } catch (e) {
         return res.status(500).send(e);
