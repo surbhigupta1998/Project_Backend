@@ -12,12 +12,12 @@ router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('
         return res.status(400).send({ msg: errors.array() })
 
     const { name, password, email } = req.body;
-        if (!name)
-            return res.status(400).send({ msg: "name must be provided" })
-        if (!password)
-            return res.status(400).send({ msg: "password must be provided" })
-        if (!email)
-            return res.status(400).send({ msg: "email must be provided" })
+        // if (!name)
+        //     return res.status(400).send({ msg: "name must be provided" })
+        // if (!password)
+        //     return res.status(400).send({ msg: "password must be provided" })
+        // if (!email)
+        //     return res.status(400).send({ msg: "email must be provided" })
 
         //check email
         const result = await userdetails.findOne({ email: email })
