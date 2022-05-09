@@ -6,12 +6,12 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('name', 'Name must be 6 characters long').isLength({ min: 6 })], async (req, res) => {
+    try {
     const errors = validationResult(req);
     if (!errors.isEmpty())
         return res.status(400).send({ msg: errors.array() })
 
     const { name, password, email } = req.body;
-    try {
         if (!name)
             return res.status(400).send({ msg: "name must be provided" })
         if (!password)
