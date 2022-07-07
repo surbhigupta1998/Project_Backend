@@ -7,11 +7,13 @@ const jwt = require('jsonwebtoken')
 
 router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('name', 'Name must be 6 characters long').isLength({ min: 6 })], async (req, res) => {
     try {
+        
     const errors = validationResult(req);
     if (!errors.isEmpty())
         return res.status(400).send({ msg: errors.array() })
 
     const { name, password, email } = req.body;
+
         // if (!name)
         //     return res.status(400).send({ msg: "name must be provided" })
         // if (!password)
@@ -20,22 +22,19 @@ router.post('/register', [body('email', 'Enter a valid email').isEmail(), body('
         //     return res.status(400).send({ msg: "email must be provided" })
 
         //check email
-        const result = await userdetails.findOne({ email: email })
-        if (result)
-            return res.status(400).send({ msg: "email already exist!!!" })
+        const result = await userdetails.findOne({ email: email });
+        if (result) return res.status(400).send({ msg: "email already exist!!!" })
 
         //hash password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
-
         const user = new userdetails({
             name: name,
             email: email,
             password: hashedPassword
         })
-
         await user.save();
-        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_TOKEN)
+        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_KEY);
         return res.status(200).send({ authtoken: token });
     } catch (e) {
         return res.status(400).send(e)
@@ -65,7 +64,7 @@ router.post('/login',[body('email', 'Enter a valid email').isEmail()], async (re
             return res.status(400).send({ msg: "Invalid Credentials" });
 
         // token
-        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_TOKEN)
+        const token = jwt.sign({ email: email, password: password }, process.env.JWT_SECRET_KEY)
         return res.status(200).send({ authtoken: token });
     } catch (e) {
         return res.status(500).send(e);
